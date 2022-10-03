@@ -1,0 +1,22 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "gcr.io/monitor-271806/biobox-socket-server:$COMMIT_SHA",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/monitor-271806/biobox-socket-server:$COMMIT_SHA"]
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "run"
+      - "deploy"
+      - "biobox-socket-server"
+      - "--image"
+      - "gcr.io/monitor-271806/biobox-socket-server:$COMMIT_SHA"
+      - "--region"
+      - "asia-south1"
+      - "--platform"
+      - "managed"
